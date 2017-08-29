@@ -26,5 +26,14 @@ repeatNTimesWithoutSpaces n = do
             repeatNTimesWithoutSpaces (n+1)
     else do repeatNTimesWithoutSpaces (n+1)
 
+takeOneElement :: Int -> Int -> Int
+takeOneElement i j =
+    mat!(i,j)
+
+-- setValue :: (Int, Int) -> Int -> Array -> Array
+setValue (x,y) a ar = ar // [((x,y), a)]
+
+-- replaceOneElement i j value =
+    
 --main = repeatNTimes length(arrFinal)
 main = repeatNTimes 0
