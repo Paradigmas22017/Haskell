@@ -65,14 +65,46 @@ playerJ = 1
 	--	else do Nothing
 --	}
 
+f x y = case x of
+	1 -> case y of
+		1 -> undefined
+		2 -> undefined
+	2 -> case y of
+		1 -> undefined
+
 gameLoop :: Int -> Int -> Array (Int, Int) Int -> IO()
 gameLoop i j arr = do { printNewMatrix i j 5 arr;
         opcao <- getChar;
-        case opcao of 'd' -> gameLoop (i+1) j (setValue ((i+1), j) 5 (setValue ((i), j) 0 arr));
-			'a' -> gameLoop (i-1) j (setValue ((i-1), j) 5 (setValue ((i), j) 0 arr));
-			'w' -> gameLoop i (j-1) (setValue (i, (j-1)) 5 (setValue ((i), j) 0 arr));
-			's' -> gameLoop i (j+1) (setValue (i, (j+1)) 5 (setValue ((i), j) 0 arr));
+        case opcao of
+        	'd' -> moveRight i j arr;
+			'a' -> moveLeft i j arr;
+			'w' -> moveUp i j arr;
+			's' -> moveDown i j arr;
 	}
+
+moveRight :: Int -> Int -> Array (Int, Int) Int -> IO()
+moveRight i j arr = case takeOneElement (i+1) j of
+	0 -> gameLoop (i+1) j (setValue ((i+1), j) 5 (setValue ((i), j) 0 arr));
+	1 -> gameLoop i j arr;
+	9 -> gameLoop i j arr;
+
+moveLeft :: Int -> Int -> Array (Int, Int) Int -> IO()
+moveLeft i j arr = case takeOneElement (i-1) j of
+	0 -> gameLoop (i-1) j (setValue ((i-1), j) 5 (setValue ((i), j) 0 arr));
+	1 -> gameLoop i j arr;
+	9 -> gameLoop i j arr;
+
+moveUp :: Int -> Int -> Array (Int, Int) Int -> IO()
+moveUp i j arr = case takeOneElement i (j-1) of
+	0 -> gameLoop i (j-1) (setValue (i, (j-1)) 5 (setValue ((i), j) 0 arr));
+	1 -> gameLoop i j arr;
+	9 -> gameLoop i j arr;
+
+moveDown :: Int -> Int -> Array (Int, Int) Int -> IO()
+moveDown i j arr = case takeOneElement i (j+1) of
+	0 -> gameLoop i (j+1) (setValue (i, (j+1)) 5 (setValue ((i), j) 0 arr));
+	1 -> gameLoop i j arr;
+	9 -> gameLoop i j arr;
 
 --newArray :: Int -> Int -> Array -> Array
 newArray i j arr = setValue (i, j) 5 arr
