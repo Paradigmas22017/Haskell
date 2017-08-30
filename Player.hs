@@ -1,4 +1,4 @@
-module Player(playerI, playerJ, moveRight, moveLeft, moveUp, moveDown, gameLoop) where
+module Player(playerI, playerJ, moveRight, moveLeft, moveUp, moveDown, gameLoop, moveConditions) where
 
 import Data.Array
 import Data.List.Split
@@ -40,9 +40,13 @@ moveDown i j arr = case takeOneElement i (j+1) arr of
 gameLoop :: Int -> Int -> Array (Int, Int) Int -> IO()
 gameLoop i j arr = do { printNewMatrix i j 5 arr;
         opcao <- getChar;
-        case opcao of
-        	'd' -> moveRight i j arr;
-			'a' -> moveLeft i j arr;
-			'w' -> moveUp i j arr;
-			's' -> moveDown i j arr;
+        moveConditions opcao i j arr
 	}
+
+moveConditions :: Char -> Int -> Int -> Array (Int, Int) Int -> IO()
+moveConditions opcao i j arr
+	| opcao == 'd' = moveRight i j arr
+	| opcao == 'a' = moveLeft i j arr
+	| opcao == 'w' = moveUp i j arr
+	| opcao == 's' = moveDown i j arr
+	| otherwise = gameLoop i j arr
