@@ -4,7 +4,7 @@ import Control.Monad
 import System.IO
 import Text.Printf (printf)
 
-mat = array ((0,0),(4,4)) [((1,1),0), ((1,2),0), ((1,3),0), ((2,1),1), ((2,2),1),
+initialGrid = array ((0,0),(4,4)) [((1,1),0), ((1,2),0), ((1,3),0), ((2,1),1), ((2,2),1),
 	((2,3), 0), ((3,1), 1), ((3,2), 0), ((3,3), 0), ((0, 0), 9), ((0, 1), 9),
 	((0, 2), 9), ((0, 3), 9), ((0, 4), 9), ((1, 0), 9), ((2, 0), 9), ((3, 0), 9),
 	((4, 0), 9), ((4, 1), 9), ((4, 2), 9), ((4, 3), 9), ((4, 4), 9), ((1, 4), 9),
@@ -13,8 +13,12 @@ mat = array ((0,0),(4,4)) [((1,1),0), ((1,2),0), ((1,3),0), ((2,1),1), ((2,2),1)
 printArray arr =
   unlines [unwords [show (arr ! (x, y)) | x <- [0..4]] | y <- [0..4]]
 
-arrFinal :: String
-arrFinal = printArray mat
+--newArray :: Int -> Int -> Array -> Array
+newArray i j arr = setValue (i, j) 5 arr
+
+--moveD arr posI posY = gameLoop ((setValue posI+1 posY arr) (posI+1) posY)
+
+printNewMatrix x y value arr = repeatNTimes (printArray (setValue (x, y) value arr)) (-1)
 
 --49 é obtido fazendo-se repeatNTimes length arrFinal no terminal
 --repeatNTimes :: Int -> IO()
@@ -29,48 +33,22 @@ repeatNTimes arr n = do
   	putChar((arr)!!n)
   	repeatNTimes arr (n+1)
 
-repeatNTimesWithoutSpaces :: Int -> IO()
-repeatNTimesWithoutSpaces 49 = putChar((arrFinal)!!49)
-repeatNTimesWithoutSpaces n = do
-  if (arrFinal!!n) /= ' '
-    then do putChar((arrFinal)!!n)
-            repeatNTimesWithoutSpaces (n+1)
-    else do repeatNTimesWithoutSpaces (n+1)
+arrFinal :: Array (Int, Int) Int -> String
+arrFinal arr = printArray arr
 
-takeOneElement :: Int -> Int -> Int
-takeOneElement i j =
-    mat!(i,j)
+repeatNTimesWithoutSpaces :: Array (Int, Int) Int -> Int -> IO()
+repeatNTimesWithoutSpaces arr 49 = putChar((arrFinal arr)!!49)
+repeatNTimesWithoutSpaces arr n = do
+  if ((arrFinal arr)!!n) /= ' '
+    then do putChar((arrFinal arr)!!n)
+            repeatNTimesWithoutSpaces arr (n+1)
+    else do repeatNTimesWithoutSpaces arr (n+1)
+
+takeOneElement :: Int -> Int -> Array (Int, Int) Int -> Int
+takeOneElement i j arr =  arr!(i,j)
 
 setValue :: (Int, Int) -> Int -> Array (Int, Int) Int-> Array (Int, Int) Int
 setValue (x, y) value ar = ar // [((x,y), value)]
-
--- replaceOneElement i j value =
-    
---main = repeatNTimes length(arrFinal)
-main = repeatNTimes (printArray (mat)) 0
-
-playerI :: Int
-playerI = 1
-playerJ :: Int
-playerJ = 1
-
---gameLoop :: IO()
---gameLoop = do {	putStrLn "Menu Principal do Jogo: ";
-	--printNewMatrix playerI playerJ 5 mat
---	key <- getLine
---	case key of "d" -> putStrLn "Menu Principal do Jogo: ";
---		'q' -> putStrLn "O jogo vai acabar..."
-	--if (key == 'd')
-	--	then do gameLoop (setValue posI+1 posY 5 arr) (posI+1) posY
-	--	else do Nothing
---	}
-
-f x y = case x of
-	1 -> case y of
-		1 -> undefined
-		2 -> undefined
-	2 -> case y of
-		1 -> undefined
 
 gameLoop :: Int -> Int -> Array (Int, Int) Int -> IO()
 gameLoop i j arr = do { printNewMatrix i j 5 arr;
@@ -82,33 +60,34 @@ gameLoop i j arr = do { printNewMatrix i j 5 arr;
 			's' -> moveDown i j arr;
 	}
 
+playerI :: Int
+playerI = 1
+playerJ :: Int
+playerJ = 1
+
 moveRight :: Int -> Int -> Array (Int, Int) Int -> IO()
-moveRight i j arr = case takeOneElement (i+1) j of
+moveRight i j arr = case takeOneElement (i+1) j arr of
 	0 -> gameLoop (i+1) j (setValue ((i+1), j) 5 (setValue ((i), j) 0 arr));
 	1 -> gameLoop i j arr;
 	9 -> gameLoop i j arr;
 
 moveLeft :: Int -> Int -> Array (Int, Int) Int -> IO()
-moveLeft i j arr = case takeOneElement (i-1) j of
+moveLeft i j arr = case takeOneElement (i-1) j arr of
 	0 -> gameLoop (i-1) j (setValue ((i-1), j) 5 (setValue ((i), j) 0 arr));
 	1 -> gameLoop i j arr;
 	9 -> gameLoop i j arr;
 
 moveUp :: Int -> Int -> Array (Int, Int) Int -> IO()
-moveUp i j arr = case takeOneElement i (j-1) of
+moveUp i j arr = case takeOneElement i (j-1) arr of
 	0 -> gameLoop i (j-1) (setValue (i, (j-1)) 5 (setValue ((i), j) 0 arr));
 	1 -> gameLoop i j arr;
 	9 -> gameLoop i j arr;
 
 moveDown :: Int -> Int -> Array (Int, Int) Int -> IO()
-moveDown i j arr = case takeOneElement i (j+1) of
+moveDown i j arr = case takeOneElement i (j+1) arr of
 	0 -> gameLoop i (j+1) (setValue (i, (j+1)) 5 (setValue ((i), j) 0 arr));
 	1 -> gameLoop i j arr;
 	9 -> gameLoop i j arr;
 
---newArray :: Int -> Int -> Array -> Array
-newArray i j arr = setValue (i, j) 5 arr
-
---moveD arr posI posY = gameLoop ((setValue posI+1 posY arr) (posI+1) posY)
-
-printNewMatrix x y value arr = repeatNTimes (printArray (setValue (x, y) value arr)) (-1)
+main :: IO()
+main = gameLoop playerI playerJ initialGrid
