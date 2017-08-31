@@ -7,15 +7,30 @@ import Control.Monad
 import System.IO
 import Text.Printf (printf)
 
+gridWidth :: Int
+gridWidth = 10
+
+gridHeight :: Int
+gridHeight = 10
+
+
 initialGrid :: Array (Int, Int) Int
-initialGrid = array ((0,0),(4,4)) [((1,1),0), ((1,2),0), ((1,3),0), ((2,1),1), ((2,2),1),
-	((2,3), 0), ((3,1), 1), ((3,2), 0), ((3,3), 0), ((0, 0), 9), ((0, 1), 9),
-	((0, 2), 9), ((0, 3), 9), ((0, 4), 9), ((1, 0), 9), ((2, 0), 9), ((3, 0), 9),
-	((4, 0), 9), ((4, 1), 9), ((4, 2), 9), ((4, 3), 9), ((4, 4), 9), ((1, 4), 9),
-	((2, 4), 9), ((3, 4), 9), ((4, 4), 9)]
+initialGrid =
+	array ((0,0),(gridWidth,gridHeight)) [((x,y), generator x y) | x<-[0..gridWidth], y<-[0..gridHeight]]
+
+generator :: Int -> Int -> Int
+generator x y
+	| x == 0 || y == 0 || x == gridWidth || y == gridHeight = 9
+	| x == 1 && y == 1 = 0
+	| x == 1 && y == 2 = 0
+	| x == 1 && y == 3 = 0
+	| x == 2 && y == 2 = 0
+	| (mod (x*y) 4 == 1 || mod (x*y) 4 == 3) = 9
+	| (mod (x*y) 7 == 1 || mod (x*y) 7 == 3 || mod (x*y) 7 == 4 || mod (x*y) 7 == 6 || mod (x*y) 7 == 3) = 1
+	| otherwise = 0
 
 printArray arr =
-  unlines [unwords [show (arr ! (x, y)) | x <- [0..4]] | y <- [0..4]]
+  unlines [unwords [show (arr ! (x, y)) | x <- [0..gridWidth]] | y <- [0..gridHeight]]
 
 --newArray :: Int -> Int -> Array -> Array
 newArray i j arr = setValue (i, j) 5 arr
@@ -25,14 +40,14 @@ newArray i j arr = setValue (i, j) 5 arr
 printNewMatrix x y value arr = repeatNTimes (printArray (setValue (x, y) value arr)) (-1)
 
 --49 é obtido fazendo-se repeatNTimes length arrFinal no terminal
---repeatNTimes :: Int -> IO()
+--repeatNTimes :: Array (Int, Int) Int -> Int
 repeatNTimes arr (-1) = do
 	putChar '\n'
 	repeatNTimes arr (0)
-repeatNTimes arr 50 = putChar '\n'
-repeatNTimes arr 49 = do
-	putChar((arr)!!49)
-	repeatNTimes arr (50)
+repeatNTimes arr 242 = putChar '\n'
+repeatNTimes arr 241 = do
+	putChar((arr)!!241)
+	repeatNTimes arr (242)
 repeatNTimes arr n = do
   	putChar((arr)!!n)
   	repeatNTimes arr (n+1)
