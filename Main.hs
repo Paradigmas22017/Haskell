@@ -8,6 +8,7 @@ import Text.Printf (printf)
 
 import Grid
 import Player
+import Menu
 
 main :: IO()
-main = gameLoop playerI playerJ initialGrid
+main = menu
