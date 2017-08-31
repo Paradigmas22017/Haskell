@@ -21,7 +21,7 @@ menu = do { putStrLn "Menu Principal do Jogo: ";
 
 menuInitGame :: IO()
 menuInitGame = do {
-	putStrLn " "; putStrLn " ";putStrLn " ";putStrLn " ";putStrLn " ";putStrLn " ";putStrLn " ";putStrLn " ";putStrLn " ";putStrLn " ";putStrLn " ";putStrLn " ";putStrLn " ";
+	printStringNTimesWithDelay 20 "\n" 0;
 	putStrLn "Comandos do jogo:";
 	putStrLn "W - Andar para cima";
 	putStrLn "S - Andar para baixo";
@@ -29,9 +29,23 @@ menuInitGame = do {
 	putStrLn "A - Andar para esquerda";
 	putStrLn "Barra de espaço - Plantar a bomba";
 	putStrLn "C - Explodir a bomba";
-	putStrLn " ";putStrLn " ";putStrLn " ";putStrLn " ";putStrLn " ";
-	putStrLn "Carregando o jogo...";
-	threadDelay 5000000;
+	printStringNTimesWithDelay 5 "\n" 0;
+	loadingGame;
 	gameLoop playerI playerJ initialGrid
 }
-				
+
+loadingGame :: IO()
+loadingGame = do {
+				putStr "Carregando o jogo.";
+				threadDelay 500000;
+				printStringNTimesWithDelay 8 "." 500000;
+				putStrLn ".";
+				threadDelay 500000;
+}
+
+printStringNTimesWithDelay 0 str delay = return ()
+printStringNTimesWithDelay n str delay = 
+	do
+		putStr str;
+		threadDelay delay;
+		printStringNTimesWithDelay (n-1) str delay
