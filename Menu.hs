@@ -8,7 +8,8 @@ import Player
 import Grid
 
 menu :: IO()
-menu = do { putStrLn "Menu Principal do Jogo: ";
+menu = do { clear;
+		putStrLn "Menu Principal do Jogo: ";
 		putStrLn "1 - Quero escolher o meu personagem";
 		putStrLn "2 - Começar a jogar";
 		putStrLn "3 - Sair";
@@ -21,7 +22,7 @@ menu = do { putStrLn "Menu Principal do Jogo: ";
 
 menuInitGame :: IO()
 menuInitGame = do {
-	printStringNTimesWithDelay 20 "\n" 0;
+	clear;
 	putStrLn "Comandos do jogo:";
 	putStrLn "W - Andar para cima";
 	putStrLn "S - Andar para baixo";
@@ -50,3 +51,6 @@ printStringNTimesWithDelay n str delay =
 		putStr str;
 		threadDelay delay;
 		printStringNTimesWithDelay (n-1) str delay
+
+clear :: IO()
+clear = putStr "\ESC[2J"

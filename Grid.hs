@@ -42,6 +42,7 @@ printNewMatrix x y value arr = repeatNTimes (printArray (setValue (x, y) value a
 --49 é obtido fazendo-se repeatNTimes length arrFinal no terminal
 --repeatNTimes :: Array (Int, Int) Int -> Int
 repeatNTimes arr (-1) = do
+	clear
 	putChar '\n'
 	repeatNTimes arr (0)
 repeatNTimes arr 242 = putChar '\n'
@@ -68,3 +69,6 @@ takeOneElement i j arr =  arr!(i,j)
 
 setValue :: (Int, Int) -> Int -> Array (Int, Int) Int-> Array (Int, Int) Int
 setValue (x, y) value ar = ar // [((x,y), value)]
+
+clear :: IO()
+clear = putStr "\ESC[2J"
