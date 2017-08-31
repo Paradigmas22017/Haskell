@@ -43,6 +43,7 @@ loadingGame = do {
 				threadDelay 500000;
 }
 
+printStringNTimesWithDelay :: Int -> String -> Int -> IO()
 printStringNTimesWithDelay 0 str delay = return ()
 printStringNTimesWithDelay n str delay = 
 	do
