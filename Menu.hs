@@ -31,7 +31,7 @@ menuInitGame = do {
 	putStrLn "C - Explodir a bomba";
 	printStringNTimesWithDelay 5 "\n" 0;
 	loadingGame;
-	gameLoop playerI playerJ initialGrid
+	gameLoop playerI playerJ initialGrid 5
 }
 
 loadingGame :: IO()
@@ -45,7 +45,7 @@ loadingGame = do {
 
 printStringNTimesWithDelay :: Int -> String -> Int -> IO()
 printStringNTimesWithDelay 0 str delay = return ()
-printStringNTimesWithDelay n str delay = 
+printStringNTimesWithDelay n str delay =
 	do
 		putStr str;
 		threadDelay delay;
