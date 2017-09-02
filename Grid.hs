@@ -37,7 +37,8 @@ newArray i j arr = setValue (i, j) 5 arr
 
 --moveD arr posI posY = gameLoop ((setValue posI+1 posY arr) (posI+1) posY)
 
-printNewMatrix x y value arr = repeatNTimes (printArray (setValue (x, y) value arr)) (-1)
+printNewMatrix x y value arr = do
+	repeatNTimes (printArray (setValue (x, y) value arr)) (-1)
 
 --49 é obtido fazendo-se repeatNTimes length arrFinal no terminal
 --repeatNTimes :: Array (Int, Int) Int -> Int
