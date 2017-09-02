@@ -36,9 +36,10 @@ printArray arr =
 newArray i j arr = setValue (i, j) 5 arr
 
 --moveD arr posI posY = gameLoop ((setValue posI+1 posY arr) (posI+1) posY)
-
-printNewMatrix x y value arr = do
-	repeatNTimes (printArray (setValue (x, y) value arr)) (-1)
+printNewMatrix :: Int -> Int -> Int -> Int -> Int -> Int -> Array(Int, Int) Int -> IO()
+printNewMatrix player_x player_y bomb_x bomb_y player_value bomb_value arr
+	| bomb_x /= (-1) && bomb_y /= (-1) = repeatNTimes (printArray (setValue (player_x, player_y) bomb_value arr)) (-1)
+	| bomb_x == (-1) && bomb_y == (-1) = repeatNTimes (printArray (setValue (player_x, player_y) player_value arr)) (-1)
 
 --49 é obtido fazendo-se repeatNTimes length arrFinal no terminal
 --repeatNTimes :: Array (Int, Int) Int -> Int
