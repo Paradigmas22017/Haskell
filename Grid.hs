@@ -21,7 +21,7 @@ initialGrid =
 generator :: Int -> Int -> Int
 generator x y
 	| x == 0 || y == 0 || x == gridWidth || y == gridHeight = 9
-	| x == 1 && y == 1 = 0
+	| x == 1 && y == 1 = 5
 	| x == 1 && y == 2 = 0
 	| x == 1 && y == 3 = 0
 	| x == 2 && y == 2 = 0
