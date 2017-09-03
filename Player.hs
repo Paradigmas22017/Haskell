@@ -21,41 +21,68 @@ player = 5
 bomb :: Int
 bomb = 7
 
-
 moveRight :: Int -> Int -> Array (Int, Int) Int -> IO()
-moveRight i j arr = case takeOneElement (i+1) j arr of
-	0 -> gameLoop (i+1) j (-1) (-1) player bomb (setValue ((i+1), j) player (setValue ((i), j) 0 arr));
-	1 -> gameLoop i j (-1) (-1) player bomb arr;
-	9 -> gameLoop i j (-1) (-1) player bomb arr;
+moveRight i j arr
+	| (takeOneElement i j arr) == 5 = case (takeOneElement (i+1) j arr) of
+		0 -> gameLoop (i+1) j (-1) (-1) player bomb (setValue ((i+1), j) player (setValue ((i), j) 0 arr));
+		1 -> gameLoop i j (-1) (-1) player bomb arr;
+		9 -> gameLoop i j (-1) (-1) player bomb arr;
+		7 -> gameLoop i j (-1) (-1) player bomb arr;
+	| (takeOneElement i j arr) == 7 = case (takeOneElement (i+1) j arr) of
+		0 -> gameLoop (i+1) j (-1) (-1) player bomb (setValue ((i+1), j) player arr); -- Sem resetar para zero
+		1 -> gameLoop i j (-1) (-1) player bomb arr;
+		9 -> gameLoop i j (-1) (-1) player bomb arr;
+		7 -> gameLoop i j (-1) (-1) player bomb arr;
 
 moveLeft :: Int -> Int -> Array (Int, Int) Int -> IO()
-moveLeft i j arr = case takeOneElement (i-1) j arr of
-	0 -> gameLoop (i-1) j (-1) (-1) player bomb (setValue ((i-1), j) player (setValue ((i), j) 0 arr));
-	1 -> gameLoop i j (-1) (-1) player bomb arr;
-	9 -> gameLoop i j (-1) (-1) player bomb arr;
+moveLeft i j arr
+ 	| (takeOneElement i j arr) == 5 = case takeOneElement (i-1) j arr of
+		0 -> gameLoop (i-1) j (-1) (-1) player bomb (setValue ((i-1), j) player (setValue ((i), j) 0 arr));
+		1 -> gameLoop i j (-1) (-1) player bomb arr;
+		9 -> gameLoop i j (-1) (-1) player bomb arr;
+		7 -> gameLoop i j (-1) (-1) player bomb arr;
+	| (takeOneElement i j arr) == 7 = case takeOneElement (i-1) j arr of
+		0 -> gameLoop (i-1) j (-1) (-1) player bomb (setValue ((i-1), j) player arr);
+		1 -> gameLoop i j (-1) (-1) player bomb arr;
+		9 -> gameLoop i j (-1) (-1) player bomb arr;
+		7 -> gameLoop i j (-1) (-1) player bomb arr;
 
 moveUp :: Int -> Int -> Array (Int, Int) Int -> IO()
-moveUp i j arr = case takeOneElement i (j-1) arr of
-	0 -> gameLoop i (j-1) (-1) (-1) player bomb (setValue (i, (j-1)) player (setValue ((i), j) 0 arr));
-	1 -> gameLoop i j (-1) (-1) player bomb arr;
-	9 -> gameLoop i j (-1) (-1) player bomb arr;
+moveUp i j arr
+	| (takeOneElement i j arr) == 5 = case takeOneElement i (j-1) arr of
+		0 -> gameLoop i (j-1) (-1) (-1) player bomb (setValue (i, (j-1)) player (setValue ((i), j) 0 arr));
+		1 -> gameLoop i j (-1) (-1) player bomb arr;
+		9 -> gameLoop i j (-1) (-1) player bomb arr;
+		7 -> gameLoop i j (-1) (-1) player bomb arr;
+	| (takeOneElement i j arr) == 7 = case takeOneElement i (j-1) arr of
+		0 -> gameLoop i (j-1) (-1) (-1) player bomb (setValue (i, (j-1)) player arr);
+		1 -> gameLoop i j (-1) (-1) player bomb arr;
+		9 -> gameLoop i j (-1) (-1) player bomb arr;
+		7 -> gameLoop i j (-1) (-1) player bomb arr;
 
 moveDown :: Int -> Int -> Array (Int, Int) Int -> IO()
-moveDown i j arr = case takeOneElement i (j+1) arr of
-	0 -> gameLoop i (j+1) (-1) (-1) player bomb (setValue (i, (j+1)) player (setValue ((i), j) 0 arr));
-	1 -> gameLoop i j (-1) (-1) player bomb arr;
-	9 -> gameLoop i j (-1) (-1) player bomb arr;
+moveDown i j arr
+	| (takeOneElement i j arr) == 5 = case takeOneElement i (j+1) arr of
+		0 -> gameLoop i (j+1) (-1) (-1) player bomb (setValue (i, (j+1)) player (setValue ((i), j) 0 arr));
+		1 -> gameLoop i j (-1) (-1) player bomb arr;
+		9 -> gameLoop i j (-1) (-1) player bomb arr;
+		7 -> gameLoop i j (-1) (-1) player bomb arr;
+	| (takeOneElement i j arr) == 7 = case takeOneElement i (j+1) arr of
+		0 -> gameLoop i (j+1) (-1) (-1) player bomb (setValue (i, (j+1)) player arr);
+		1 -> gameLoop i j (-1) (-1) player bomb arr;
+		9 -> gameLoop i j (-1) (-1) player bomb arr;
+		7 -> gameLoop i j (-1) (-1) player bomb arr;
+
 
 putBomb :: Int -> Int -> Array (Int, Int) Int -> IO()
 putBomb i j arr = case takeOneElement i j arr of
-	5 -> gameLoop i j i j player bomb arr;
-	1 -> gameLoop i j (-1) (-1) player bomb arr;
-	9 -> gameLoop i j (-1) (-1) player bomb arr;
+	5 -> gameLoop i j i j player bomb (setValue ((i), j) bomb arr);
 
 -- player_x player_y bomb_x bomb_y player_value bomb_value arr
 gameLoop :: Int -> Int -> Int -> Int -> Int -> Int-> Array (Int, Int) Int -> IO()
 -- element deve ser player ou bomb
-gameLoop player_x player_y bomb_x bomb_y player_value bomb_value arr = do { printNewMatrix player_x player_y bomb_x bomb_y  player_value bomb_value arr;
+gameLoop player_x player_y bomb_x bomb_y player_value bomb_value arr = do {
+				printNewMatrix player_x player_y bomb_x bomb_y player_value bomb_value arr;
         opcao <- getChar;
         actionConditions opcao player_x player_y bomb_x bomb_y player_value bomb_value arr
 	}
