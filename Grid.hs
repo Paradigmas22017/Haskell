@@ -1,5 +1,5 @@
 module Grid(initialGrid, printArray, newArray, repeatNTimes,
-	repeatNTimesWithoutSpaces, arrFinal, takeOneElement, setValue, printNewMatrix, findBomb) where
+	repeatNTimesWithoutSpaces, arrFinal, takeOneElement, setValue, printNewMatrix, findBomb, makeExplosion) where
 
 import Data.Array
 import Data.List.Split
@@ -74,18 +74,30 @@ takeOneElement i j arr =  arr!(i,j)
 setValue :: (Int, Int) -> Int -> Array (Int, Int) Int-> Array (Int, Int) Int
 setValue (x, y) value ar = ar // [((x,y), value)]
 
-findBomb :: Int -> Int -> Array (Int, Int) Int -> (Int, Int)
+
+
+findBomb :: Int -> Int -> Array (Int, Int) Int -> [Int]
 findBomb i j arr
-	| (arr ! (i, j)) == 7 = (i, j)
+	| (arr ! (i, j)) == 7 = [i, j]
 	| (arr ! (i, j) /= 7 && i < gridWidth) = findBomb (i+1) j arr
 	| (arr ! (i, j	) /= 7 && i == gridWidth && j < gridHeight) = findBomb 0 (j+1) arr
-	| (arr ! (i, j	) /= 7 && i == gridWidth && j == gridHeight) = (-1, -1)
-	| otherwise = (-10, -10) -- Caso de erro
+	| (arr ! (i, j	) /= 7 && i == gridWidth && j == gridHeight) = [-1, -1]
+	| otherwise = [-10, -10] -- Caso de erro
 
--- findBomb :: Int -> Int -> Array (Int, Int) Int -> IO()
--- findBomb i j arr
--- 	| (arr ! (i, j)) == 7 = putStrLn "Tem bomba"
--- 	| (arr ! (i, j) /= 7 && i < gridWidth) = findBomb (i+1) j arr
--- 	| (arr ! (i, j) /= 7 && i == gridWidth && j < gridHeight) = findBomb 0 (j+1) arr
--- 	| (arr ! (i, j) /= 7 && i == gridWidth && j == gridHeight) = putStrLn "Não há bomba na matriz"
--- 	| otherwise = putStrLn "Deu ruim"
+-- makeExplosion :: Int -> Int -> [Int] -> Int -> Int -> Array (Int, Int) Int -> IO()
+-- makeExplosion player_x player_y bomb_position player bomb arr = do {
+-- 	-- print "this";
+-- 	-- print( show( bomb_position!!0 ))
+-- 	printNewMatrix player_x player_y (-1) (-1) player bomb (setValue (bomb_position!!0+1, bomb_position!!1) 0
+-- 																(setValue (bomb_position!!0-1, bomb_position!!1) 0
+-- 																	(setValue (bomb_position!!0, bomb_position!!1+1) 0
+-- 																		(setValue (bomb_position!!0, bomb_position!!1-1) 0 arr	))))
+-- }
+
+makeExplosion :: Int -> Int -> [Int] -> Int -> Int -> Array (Int, Int) Int -> Array (Int, Int) Int
+makeExplosion player_x player_y bomb_position player bomb arr =
+	setValue (bomb_position!!0, bomb_position!!1) 0
+		(setValue (bomb_position!!0+1, bomb_position!!1) 0
+			(setValue (bomb_position!!0-1, bomb_position!!1) 0
+				(setValue (bomb_position!!0, bomb_position!!1+1) 0
+					(setValue (bomb_position!!0, bomb_position!!1-1) 0 arr	))))
