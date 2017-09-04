@@ -32,7 +32,7 @@ menuInitGame = do {
 	putStrLn "C - Plantar a bomba";
 	printStringNTimesWithDelay 5 "\n" 0;
 	loadingGame;
-	gameLoop playerI playerJ (-1) (-1) 5 7 initialGrid
+	gameLoop playerI playerJ (-1) (-1) '@' 'B' initialGrid
 }
 
 loadingGame :: IO()
