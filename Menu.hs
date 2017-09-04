@@ -31,14 +31,14 @@ menuInitGame = do {
 	putStrLn "C - Explodir a bomba";
 	printStringNTimesWithDelay 5 "\n" 0;
 	loadingGame;
-	gameLoop playerI playerJ (-1) (-1) 5 7 initialGrid 
+	gameLoop playerI playerJ (-1) (-1) 5 7 initialGrid
 }
 
 loadingGame :: IO()
 loadingGame = do {
 				putStr "Carregando o jogo.";
 				threadDelay 500000;
-				printStringNTimesWithDelay 8 "." 500000;
+				-- printStringNTimesWithDelay 8 "." 500000;
 				putStrLn ".";
 				threadDelay 500000;
 }

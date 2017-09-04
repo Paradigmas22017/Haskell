@@ -1,11 +1,12 @@
 module Grid(initialGrid, printArray, newArray, repeatNTimes,
-	repeatNTimesWithoutSpaces, arrFinal, takeOneElement, setValue, printNewMatrix) where
+	repeatNTimesWithoutSpaces, arrFinal, takeOneElement, setValue, printNewMatrix, findElement, makeExplosion, finishGame) where
 
 import Data.Array
 import Data.List.Split
 import Control.Monad
 import System.IO
 import Text.Printf (printf)
+import Control.Concurrent (threadDelay);
 
 gridWidth :: Int
 gridWidth = 10
@@ -37,9 +38,12 @@ newArray i j arr = setValue (i, j) 5 arr
 
 --moveD arr posI posY = gameLoop ((setValue posI+1 posY arr) (posI+1) posY)
 printNewMatrix :: Int -> Int -> Int -> Int -> Int -> Int -> Array(Int, Int) Int -> IO()
-printNewMatrix player_x player_y bomb_x bomb_y player_value bomb_value arr
-	| bomb_x /= (-1) && bomb_y /= (-1) = repeatNTimes (printArray (setValue (player_x, player_y) bomb_value arr)) (-1)
-	| bomb_x == (-1) && bomb_y == (-1) = repeatNTimes (printArray (setValue (player_x, player_y) player_value arr)) (-1)
+printNewMatrix player_x player_y bomb_x bomb_y player_value bomb_value arr =
+	if bomb_x /= (-1) && bomb_y /= (-1)
+		then repeatNTimes (printArray (setValue (player_x, player_y) bomb_value arr)) (-1)
+		else if bomb_x == (-1) && bomb_y == (-1)
+			then repeatNTimes (printArray (setValue (player_x, player_y) player_value arr)) (-1)
+			else print "Caso Errado"
 
 --49 é obtido fazendo-se repeatNTimes length arrFinal no terminal
 --repeatNTimes :: Array (Int, Int) Int -> Int
@@ -70,3 +74,38 @@ takeOneElement i j arr =  arr!(i,j)
 
 setValue :: (Int, Int) -> Int -> Array (Int, Int) Int-> Array (Int, Int) Int
 setValue (x, y) value ar = ar // [((x,y), value)]
+
+
+
+findElement :: Int -> Int -> Int -> Array (Int, Int) Int -> [Int]
+findElement i j element arr
+	| (arr ! (i, j)) == element = [i, j]
+	| (arr ! (i, j) /= element && i < gridWidth) = findElement (i+1) j element arr
+	| (arr ! (i, j	) /= element && i == gridWidth && j < gridHeight) = findElement 0 (j+1) element arr
+	| (arr ! (i, j	) /= element && i == gridWidth && j == gridHeight) = [-1, -1]
+	| otherwise = [-10, -10] -- Caso de erro
+
+
+
+makeExplosion :: Int -> Int -> [Int] -> Int -> Int -> Array (Int, Int) Int -> Array (Int, Int) Int
+makeExplosion player_x player_y bomb_position player bomb arr =
+	setValue (bomb_position!!0, bomb_position!!1) 0
+		(isExplosible [bomb_position!!0+1, bomb_position!!1]
+			(isExplosible [bomb_position!!0-1, bomb_position!!1]
+				(isExplosible [bomb_position!!0, bomb_position!!1+1]
+					(isExplosible [bomb_position!!0, bomb_position!!1-1] arr))))
+
+
+isExplosible :: [Int] -> Array (Int, Int) Int-> Array (Int, Int) Int
+isExplosible bomb_position arr
+	| (arr ! (bomb_position!!0, bomb_position!!1)) /= 9 = setValue (bomb_position!!0, bomb_position!!1) 0 arr
+	| otherwise = arr
+
+
+finishGame :: Array (Int, Int) Int -> IO()
+finishGame arr = do {
+	putStr (printArray arr);
+	threadDelay 2500000;
+	putStr "\ESC[2J";
+	putStrLn "\t\t\t\tThe end!\n\n\n\n\n\n\n\n\n\n\n\n\n";
+}
