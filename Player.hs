@@ -82,7 +82,7 @@ putBomb i j arr = case takeOneElement i j arr of
 gameLoop :: Int -> Int -> Int -> Int -> Int -> Int-> Array (Int, Int) Int -> IO()
 -- element deve ser player ou bomb
 gameLoop player_x player_y bomb_x bomb_y player_value bomb_value arr = do {
-				printNewMatrix player_x player_y bomb_x bomb_y player_value bomb_value arr;
+		printNewMatrix player_x player_y bomb_x bomb_y player_value bomb_value arr;
         opcao <- getChar;
         actionConditions opcao player_x player_y bomb_x bomb_y player_value bomb_value arr
 	}
@@ -94,4 +94,5 @@ actionConditions opcao player_x player_y bomb_x bomb_y player bomb arr
 	| opcao == 'w' = moveUp player_x player_y arr
 	| opcao == 's' = moveDown player_x player_y arr
 	| opcao == 'c' = putBomb player_x player_y arr
+	| opcao == ' ' = print (show (findBomb 0 0 arr))
 	| otherwise = gameLoop player_x player_y bomb_x bomb_y player bomb arr

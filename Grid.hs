@@ -1,5 +1,5 @@
 module Grid(initialGrid, printArray, newArray, repeatNTimes,
-	repeatNTimesWithoutSpaces, arrFinal, takeOneElement, setValue, printNewMatrix) where
+	repeatNTimesWithoutSpaces, arrFinal, takeOneElement, setValue, printNewMatrix, findBomb) where
 
 import Data.Array
 import Data.List.Split
@@ -37,9 +37,12 @@ newArray i j arr = setValue (i, j) 5 arr
 
 --moveD arr posI posY = gameLoop ((setValue posI+1 posY arr) (posI+1) posY)
 printNewMatrix :: Int -> Int -> Int -> Int -> Int -> Int -> Array(Int, Int) Int -> IO()
-printNewMatrix player_x player_y bomb_x bomb_y player_value bomb_value arr
-	| bomb_x /= (-1) && bomb_y /= (-1) = repeatNTimes (printArray (setValue (player_x, player_y) bomb_value arr)) (-1)
-	| bomb_x == (-1) && bomb_y == (-1) = repeatNTimes (printArray (setValue (player_x, player_y) player_value arr)) (-1)
+printNewMatrix player_x player_y bomb_x bomb_y player_value bomb_value arr =
+	if bomb_x /= (-1) && bomb_y /= (-1)
+		then repeatNTimes (printArray (setValue (player_x, player_y) bomb_value arr)) (-1)
+		else if bomb_x == (-1) && bomb_y == (-1)
+			then repeatNTimes (printArray (setValue (player_x, player_y) player_value arr)) (-1)
+			else print "Caso Errado"
 
 --49 é obtido fazendo-se repeatNTimes length arrFinal no terminal
 --repeatNTimes :: Array (Int, Int) Int -> Int
@@ -70,3 +73,19 @@ takeOneElement i j arr =  arr!(i,j)
 
 setValue :: (Int, Int) -> Int -> Array (Int, Int) Int-> Array (Int, Int) Int
 setValue (x, y) value ar = ar // [((x,y), value)]
+
+findBomb :: Int -> Int -> Array (Int, Int) Int -> (Int, Int)
+findBomb i j arr
+	| (arr ! (i, j)) == 7 = (i, j)
+	| (arr ! (i, j) /= 7 && i < gridWidth) = findBomb (i+1) j arr
+	| (arr ! (i, j	) /= 7 && i == gridWidth && j < gridHeight) = findBomb 0 (j+1) arr
+	| (arr ! (i, j	) /= 7 && i == gridWidth && j == gridHeight) = (-1, -1)
+	| otherwise = (-10, -10) -- Caso de erro
+
+-- findBomb :: Int -> Int -> Array (Int, Int) Int -> IO()
+-- findBomb i j arr
+-- 	| (arr ! (i, j)) == 7 = putStrLn "Tem bomba"
+-- 	| (arr ! (i, j) /= 7 && i < gridWidth) = findBomb (i+1) j arr
+-- 	| (arr ! (i, j) /= 7 && i == gridWidth && j < gridHeight) = findBomb 0 (j+1) arr
+-- 	| (arr ! (i, j) /= 7 && i == gridWidth && j == gridHeight) = putStrLn "Não há bomba na matriz"
+-- 	| otherwise = putStrLn "Deu ruim"
