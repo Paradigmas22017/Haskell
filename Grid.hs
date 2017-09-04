@@ -1,4 +1,4 @@
-module Grid(initialGrid, printArray, newArray, arrFinal, takeOneElement, setValue, printNewMatrix,
+module Grid(initialGrid, printArray, takeOneElement, setValue, printNewMatrix,
 	findElement, makeExplosion, finishGame) where
 
 import Data.Array
@@ -29,11 +29,9 @@ generator x y
 	| (mod (x*y) 7 == 1 || mod (x*y) 7 == 3 || mod (x*y) 7 == 4 || mod (x*y) 7 == 6 || mod (x*y) 7 == 3) = 1
 	| otherwise = 0
 
+printArray :: Array(Int, Int) Int -> String
 printArray arr =
 	unlines [unwords [show (arr ! (x, y)) | x <- [0..gridWidth]] | y <- [0..gridHeight]]
-
-newArray :: Int -> Int -> Array(Int, Int) Int -> Array(Int, Int) Int
-newArray i j arr = setValue (i, j) 5 arr
 
 printNewMatrix :: Int -> Int -> Int -> Int -> Int -> Int -> Array(Int, Int) Int -> IO()
 printNewMatrix player_x player_y bomb_x bomb_y player_value bomb_value arr =
@@ -43,16 +41,11 @@ printNewMatrix player_x player_y bomb_x bomb_y player_value bomb_value arr =
 			then putStr ("\ESC[2J\n" ++ (printArray (setValue (player_x, player_y) player_value arr)))
 			else print "Caso Errado"
 
-arrFinal :: Array (Int, Int) Int -> String
-arrFinal arr = printArray arr
-
 takeOneElement :: Int -> Int -> Array (Int, Int) Int -> Int
 takeOneElement i j arr =  arr!(i,j)
 
 setValue :: (Int, Int) -> Int -> Array (Int, Int) Int-> Array (Int, Int) Int
 setValue (x, y) value ar = ar // [((x,y), value)]
-
-
 
 findElement :: Int -> Int -> Int -> Array (Int, Int) Int -> [Int]
 findElement i j element arr
@@ -61,7 +54,6 @@ findElement i j element arr
 	| (arr ! (i, j	) /= element && i == gridWidth && j < gridHeight) = findElement 0 (j+1) element arr
 	| (arr ! (i, j	) /= element && i == gridWidth && j == gridHeight) = [-1, -1]
 	| otherwise = [-10, -10] -- Caso de erro
-
 
 makeExplosion :: Int -> Int -> [Int] -> Int -> Int -> Array (Int, Int) Int -> Array (Int, Int) Int
 makeExplosion player_x player_y bomb_position player bomb arr =

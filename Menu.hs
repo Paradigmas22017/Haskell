@@ -38,7 +38,7 @@ loadingGame :: IO()
 loadingGame = do {
 				putStr "Carregando o jogo.";
 				threadDelay 500000;
-				-- printStringNTimesWithDelay 8 "." 500000;
+				printStringNTimesWithDelay 8 "." 500000;
 				putStrLn ".";
 				threadDelay 500000;
 }

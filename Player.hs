@@ -74,12 +74,10 @@ moveDown i j arr
 		7 -> gameLoop i j (-1) (-1) player bomb arr;
 
 
-
 -- BOMB RELATED
 putBomb :: Int -> Int -> Array (Int, Int) Int -> IO()
 putBomb i j arr = case takeOneElement i j arr of
 	5 -> gameLoop i j i j player bomb (setValue ((i), j) bomb arr);
-
 
 hasBomb :: Int -> Int -> [Int] -> Array (Int, Int) Int -> IO()
 hasBomb player_x player_y bomb_position arr
@@ -92,8 +90,6 @@ checkPlayer :: Int -> Int -> [Int] -> Int -> Int -> Array (Int, Int) Int -> IO()
 checkPlayer player_x player_y bomb_position player bomb arr
 	| findElement 0 0 5 arr == [-1, -1] = finishGame arr
 	| otherwise = gameLoop player_x player_y (-1) (-1) player bomb arr
-
-
 
 
 -- player_x player_y bomb_x bomb_y player_value bomb_value arr
