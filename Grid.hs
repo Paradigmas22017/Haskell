@@ -1,11 +1,12 @@
 module Grid(initialGrid, printArray, newArray, repeatNTimes,
-	repeatNTimesWithoutSpaces, arrFinal, takeOneElement, setValue, printNewMatrix, findBomb, makeExplosion) where
+	repeatNTimesWithoutSpaces, arrFinal, takeOneElement, setValue, printNewMatrix, findElement, makeExplosion, finishGame) where
 
 import Data.Array
 import Data.List.Split
 import Control.Monad
 import System.IO
 import Text.Printf (printf)
+import Control.Concurrent (threadDelay);
 
 gridWidth :: Int
 gridWidth = 10
@@ -76,12 +77,12 @@ setValue (x, y) value ar = ar // [((x,y), value)]
 
 
 
-findBomb :: Int -> Int -> Array (Int, Int) Int -> [Int]
-findBomb i j arr
-	| (arr ! (i, j)) == 7 = [i, j]
-	| (arr ! (i, j) /= 7 && i < gridWidth) = findBomb (i+1) j arr
-	| (arr ! (i, j	) /= 7 && i == gridWidth && j < gridHeight) = findBomb 0 (j+1) arr
-	| (arr ! (i, j	) /= 7 && i == gridWidth && j == gridHeight) = [-1, -1]
+findElement :: Int -> Int -> Int -> Array (Int, Int) Int -> [Int]
+findElement i j element arr
+	| (arr ! (i, j)) == element = [i, j]
+	| (arr ! (i, j) /= element && i < gridWidth) = findElement (i+1) j element arr
+	| (arr ! (i, j	) /= element && i == gridWidth && j < gridHeight) = findElement 0 (j+1) element arr
+	| (arr ! (i, j	) /= element && i == gridWidth && j == gridHeight) = [-1, -1]
 	| otherwise = [-10, -10] -- Caso de erro
 
 
@@ -99,3 +100,12 @@ isExplosible :: [Int] -> Array (Int, Int) Int-> Array (Int, Int) Int
 isExplosible bomb_position arr
 	| (arr ! (bomb_position!!0, bomb_position!!1)) /= 9 = setValue (bomb_position!!0, bomb_position!!1) 0 arr
 	| otherwise = arr
+
+
+finishGame :: Array (Int, Int) Int -> IO()
+finishGame arr = do {
+	putStr (printArray arr);
+	threadDelay 2500000;
+	putStr "\ESC[2J";
+	putStrLn "\t\t\t\tThe end!\n\n\n\n\n\n\n\n\n\n\n\n\n";
+}

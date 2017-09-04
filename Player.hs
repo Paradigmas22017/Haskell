@@ -85,15 +85,13 @@ hasBomb :: Int -> Int -> [Int] -> Array (Int, Int) Int -> IO()
 hasBomb player_x player_y bomb_position arr
 	| bomb_position == [-1, -1] = gameLoop player_x player_y (-1) (-1) player bomb arr
 	| bomb_position == [-10, -10] = putStrLn "\n\n\n\n\tErro grave!\n\n\n\n\n"
-	| otherwise = gameLoop player_x player_y (-1) (-1) player bomb (makeExplosion  player_x player_y bomb_position player bomb arr)
+	| otherwise = checkPlayer player_x player_y bomb_position player bomb (makeExplosion  player_x player_y bomb_position player bomb arr)
 
 
-printExplosion :: Int -> Int -> (Int, Int) -> Array (Int, Int) Int -> IO()
-printExplosion player_x player_y bomb_position arr = do {
-	putStrLn "this";
-	-- threadDelay 1000000;
-	-- gameLoop player_x player_y (-1) (-1) player bomb arr
-}
+checkPlayer :: Int -> Int -> [Int] -> Int -> Int -> Array (Int, Int) Int -> IO()
+checkPlayer player_x player_y bomb_position player bomb arr
+	| findElement 0 0 5 arr == [-1, -1] = finishGame arr
+	| otherwise = gameLoop player_x player_y (-1) (-1) player bomb arr
 
 
 
@@ -114,5 +112,5 @@ actionConditions opcao player_x player_y bomb_x bomb_y player bomb arr
 	| opcao == 'w' = moveUp player_x player_y arr
 	| opcao == 's' = moveDown player_x player_y arr
 	| opcao == 'c' = putBomb player_x player_y arr
-	| opcao == ' ' = hasBomb player_x player_y (findBomb 0 0 arr) arr
+	| opcao == ' ' = hasBomb player_x player_y (findElement 0 0 7 arr) arr
 	| otherwise = gameLoop player_x player_y bomb_x bomb_y player bomb arr
