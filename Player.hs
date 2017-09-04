@@ -88,12 +88,12 @@ hasBomb player_x player_y bomb_position arr
 	| otherwise = gameLoop player_x player_y (-1) (-1) player bomb (makeExplosion  player_x player_y bomb_position player bomb arr)
 
 
--- printExplosion :: Int -> Int -> (Int, Int) -> Array (Int, Int) Int -> IO()
--- printExplosion player_x player_y bomb_position arr = do {
--- 	putStrLn "this";
--- 	-- threadDelay 1000000;
--- 	-- gameLoop player_x player_y (-1) (-1) player bomb arr
--- }
+printExplosion :: Int -> Int -> (Int, Int) -> Array (Int, Int) Int -> IO()
+printExplosion player_x player_y bomb_position arr = do {
+	putStrLn "this";
+	-- threadDelay 1000000;
+	-- gameLoop player_x player_y (-1) (-1) player bomb arr
+}
 
 
 

@@ -84,20 +84,18 @@ findBomb i j arr
 	| (arr ! (i, j	) /= 7 && i == gridWidth && j == gridHeight) = [-1, -1]
 	| otherwise = [-10, -10] -- Caso de erro
 
--- makeExplosion :: Int -> Int -> [Int] -> Int -> Int -> Array (Int, Int) Int -> IO()
--- makeExplosion player_x player_y bomb_position player bomb arr = do {
--- 	-- print "this";
--- 	-- print( show( bomb_position!!0 ))
--- 	printNewMatrix player_x player_y (-1) (-1) player bomb (setValue (bomb_position!!0+1, bomb_position!!1) 0
--- 																(setValue (bomb_position!!0-1, bomb_position!!1) 0
--- 																	(setValue (bomb_position!!0, bomb_position!!1+1) 0
--- 																		(setValue (bomb_position!!0, bomb_position!!1-1) 0 arr	))))
--- }
+
 
 makeExplosion :: Int -> Int -> [Int] -> Int -> Int -> Array (Int, Int) Int -> Array (Int, Int) Int
 makeExplosion player_x player_y bomb_position player bomb arr =
 	setValue (bomb_position!!0, bomb_position!!1) 0
-		(setValue (bomb_position!!0+1, bomb_position!!1) 0
-			(setValue (bomb_position!!0-1, bomb_position!!1) 0
-				(setValue (bomb_position!!0, bomb_position!!1+1) 0
-					(setValue (bomb_position!!0, bomb_position!!1-1) 0 arr	))))
+		(isExplosible [bomb_position!!0+1, bomb_position!!1]
+			(isExplosible [bomb_position!!0-1, bomb_position!!1]
+				(isExplosible [bomb_position!!0, bomb_position!!1+1]
+					(isExplosible [bomb_position!!0, bomb_position!!1-1] arr))))
+
+
+isExplosible :: [Int] -> Array (Int, Int) Int-> Array (Int, Int) Int
+isExplosible bomb_position arr
+	| (arr ! (bomb_position!!0, bomb_position!!1)) /= 9 = setValue (bomb_position!!0, bomb_position!!1) 0 arr
+	| otherwise = arr
